@@ -67,7 +67,7 @@ player.addEventListener('play', () => {
 });
 
 download.addEventListener('click', () => {
-  var blob = new Blob(["あいうえお"], {"type": "text/plain"});
+  var blob = new Blob(["あいうえお"], {type: "text/plain"});
 
   if (window.navigator.msSaveBlob) { 
     //window.navigator.msSaveBlob(blob, "test.txt"); 
