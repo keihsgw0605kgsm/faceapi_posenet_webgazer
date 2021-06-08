@@ -71,5 +71,5 @@ function handleDownload() {
   var blob = new Blob([ detections_json ], { "type" : "text/plain" });
   var url = window.URL.createObjectURL(blob);
   download.href = url;
-  window.navigator.msSaveBlob(blob, "test.txt"); 
+  window.navigator.msSaveBlob(blob, "test.json"); 
 }
