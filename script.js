@@ -53,7 +53,7 @@ player.addEventListener('play', () => {
 
     //結果の出力
     //console.log(detections);
-    text.textContent = detections._imageDims._score;
+    text.textContent = Object.values(detections);
   }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
