@@ -1,8 +1,8 @@
-const player = document.getElementById('video')
-//const text = document.getElementById('text')
-const download = document.getElementById('download')
+const player = document.getElementById('video');
+//const text = document.getElementById('text');
+const download = document.getElementById('download');
 var detections_json = "No Data";
-const modelUrl = './models'
+const modelUrl = './models';
 
 /**モデルのロード**/
 Promise.all([
@@ -15,7 +15,7 @@ Promise.all([
 .catch((e) => {
   console.log('モデルをロードできません: '+e);
 })
-.then(startVideo)
+.then(startVideo);
 
 /**カメラを用いたビデオストリーミング**/
 function startVideo() {
@@ -37,21 +37,21 @@ function startVideo() {
   .catch(function(err) {
     console.log(err.name+": "+err.message);
   });
-}
+};
 
 /**カメラオン時のイベント**/
 player.addEventListener('play', () => {
-  const canvas = faceapi.createCanvasFromMedia(player)
-  document.body.append(canvas)
-  const displaySize = { width: player.width, height: player.height }
-  faceapi.matchDimensions(canvas, displaySize)
+  const canvas = faceapi.createCanvasFromMedia(player);
+  document.body.append(canvas);
+  const displaySize = { width: player.width, height: player.height };
+  faceapi.matchDimensions(canvas, displaySize);
   
   setInterval(async () => {
-    const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
-    const resizedDetections = faceapi.resizeResults(detections, displaySize)
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-    faceapi.draw.drawDetections(canvas, resizedDetections)
-    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+    const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    faceapi.draw.drawDetections(canvas, resizedDetections);
+    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
 
     //結果の出力
     //console.log(detections);
@@ -60,19 +60,19 @@ player.addEventListener('play', () => {
   }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
-  })
+  });
 })
 .catch((e) => {
   console.log('player.addEventListenerでエラー：'+e);
-})
+});
 
 download.addEventListener('click', () => {
-  var blob = new Blob([detections_json], {"type": "text/plain"});
+  var blob = new Blob(["あいうえお"], {"type": "text/plain"});
 
   if (window.navigator.msSaveBlob) { 
     //window.navigator.msSaveBlob(blob, "test.txt"); 
     window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
   } else {
-    //document.getElementById("download").href = window.URL.createObjectURL(blob);
+    document.getElementById("download").href = window.URL.createObjectURL(blob);
   }
 });
