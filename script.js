@@ -1,5 +1,5 @@
 const player = document.getElementById('video')
-const text = document.getElementById('text')
+//const text = document.getElementById('text')
 const download = document.getElementById('download')
 var detections_json = "No Data";
 const modelUrl = './models'
@@ -55,7 +55,7 @@ player.addEventListener('play', () => {
 
     //結果の出力
     //console.log(detections);
-    text.textContent = JSON.stringify(detections);
+    //text.textContent = JSON.stringify(detections);
     detections_json = JSON.stringify(detections);
   }, 500)
   .catch((e) => {
@@ -70,8 +70,9 @@ download.addEventListener('click', () => {
   var blob = new Blob([detections_json], {"type": "text/plain"});
 
   if (window.navigator.msSaveBlob) { 
-    window.navigator.msSaveBlob(blob, "test.txt"); 
+    //window.navigator.msSaveBlob(blob, "test.txt"); 
+    window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
   } else {
-    document.getElementById("download").href = window.URL.createObjectURL(blob);
+    //document.getElementById("download").href = window.URL.createObjectURL(blob);
   }
 });
