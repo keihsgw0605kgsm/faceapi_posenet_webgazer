@@ -7,7 +7,7 @@ Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl),
   //faceapi.nets.ssdMobilenetv1.loadFromUri(modelUrl),
   faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
-  faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
+  //faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
   //faceapi.nets.faceExpressionNet.loadFromUri(modelUrl)
 ])
 .catch((e) => {
@@ -50,7 +50,6 @@ player.addEventListener('play', () => {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
     faceapi.draw.drawDetections(canvas, resizedDetections)
     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-    faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
 
     //結果の出力
     //console.log(detections);
