@@ -1,6 +1,5 @@
-console.log('script.js')
-
 const player = document.getElementById('video')
+const text = document.getElementById('text')
 const modelUrl = './models'
 
 /**モデルのロード**/
@@ -54,8 +53,9 @@ player.addEventListener('play', () => {
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
 
     //結果の出力
-    console.log(detections);
-  }, 100)
+    //console.log(detections);
+    text.textContent = detections;
+  }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
   })
