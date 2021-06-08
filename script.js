@@ -53,7 +53,7 @@ player.addEventListener('play', () => {
 
     //結果の出力
     //console.log(detections);
-    text.textContent = Object.values(detections);
+    text.textContent = JSON.stringify(detections);
   }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
