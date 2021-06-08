@@ -66,21 +66,8 @@ player.addEventListener('play', () => {
   console.log('player.addEventListenerでエラー：'+e);
 });
 
-/*download.addEventListener('click', () => {
+download.addEventListener('click', () => {
   var blob = new Blob(["あいうえお"], {type: "text/plain"});
-
-  if (window.navigator.msSaveBlob) { 
-    window.navigator.msSaveBlob(blob, "test.txt"); 
-    //window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
-  } else {
-    document.getElementById("download").href = window.URL.createObjectURL(blob);
-  }
-});*/
-
-function handleDownload() {
-  var content = 'あいうえお';
-  var blob = new Blob([ content ], { "type" : "text/plain" });
-  var url = window.URL.createObjectURL(blob);
-  download.href = url;
+  document.getElementById("download").href = window.URL.createObjectURL(blob);
   window.navigator.msSaveBlob(blob, "test.txt"); 
-}
+});
