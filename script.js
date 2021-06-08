@@ -52,7 +52,7 @@ player.addEventListener('play', () => {
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
 
     //結果の出力
-    //console.log(detections);
+    console.log(detections);
   }, 100)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
