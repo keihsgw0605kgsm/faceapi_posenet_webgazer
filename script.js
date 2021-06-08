@@ -68,7 +68,7 @@ player.addEventListener('play', () => {
 
 function handleDownload() {
   var content = 'あいうえお';
-  var blob = new Blob([ content ], { "type" : "text/plain" });
+  var blob = new Blob([ detections_json ], { "type" : "text/plain" });
   var url = window.URL.createObjectURL(blob);
   download.href = url;
   window.navigator.msSaveBlob(blob, "test.txt"); 
