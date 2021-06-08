@@ -1,3 +1,5 @@
+console.log('script.js')
+
 const player = document.getElementById('video')
 const modelUrl = './models'
 
