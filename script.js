@@ -1,5 +1,5 @@
 const player = document.getElementById('video')
-const modelUrl = './weights'
+const modelUrl = './models'
 
 /**モデルのロード**/
 Promise.all([
@@ -7,7 +7,7 @@ Promise.all([
   //faceapi.nets.ssdMobilenetv1.loadFromUri(modelUrl),
   faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
   faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
-  faceapi.nets.faceExpressionNet.loadFromUri(modelUrl)
+  //faceapi.nets.faceExpressionNet.loadFromUri(modelUrl)
 ])
 .catch((e) => {
   console.log('モデルをロードできません: '+e);
@@ -45,7 +45,6 @@ player.addEventListener('play', () => {
   
   setInterval(async () => {
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
-    const detections = await faceapi.detectAllFaces(player, new faceapi.SsdMobilenetv1Options()).withFaceLandmarks()
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
     faceapi.draw.drawDetections(canvas, resizedDetections)
@@ -53,7 +52,7 @@ player.addEventListener('play', () => {
     faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
 
     //結果の出力
-    console.log(detections);
+    //console.log(detections);
   }, 100)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
