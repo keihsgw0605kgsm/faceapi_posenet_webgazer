@@ -70,8 +70,8 @@ download.addEventListener('click', () => {
   var blob = new Blob(["あいうえお"], {type: "text/plain"});
 
   if (window.navigator.msSaveBlob) { 
-    //window.navigator.msSaveBlob(blob, "test.txt"); 
-    window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
+    window.navigator.msSaveBlob(blob, "test.txt"); 
+    //window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
   } else {
     document.getElementById("download").href = window.URL.createObjectURL(blob);
   }
