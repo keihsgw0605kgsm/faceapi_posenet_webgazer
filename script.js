@@ -81,12 +81,7 @@ function handleDownload() {
   var content = 'あいうえお';
   var blob = new Blob([ content ], { "type" : "text/plain" });
 
-  if (window.navigator.msSaveBlob) { 
-      window.navigator.msSaveBlob(blob, "test.txt"); 
-
-      // msSaveOrOpenBlobの場合はファイルを保存せずに開ける
-      //window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
-  } else {
-      document.getElementById("download").href = window.URL.createObjectURL(blob);
-  }
+  window.navigator.msSaveBlob(blob, "test.txt"); 
+  var url = window.URL.createObjectURL(blob);
+  download.href = url;
 }
