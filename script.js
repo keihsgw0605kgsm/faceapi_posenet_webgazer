@@ -1,5 +1,5 @@
 const player = document.getElementById('video')
-//const text = document.getElementById('text')
+const text = document.getElementById('text')
 const download = document.getElementById('download')
 var detections_json = "No Data";
 const modelUrl = './models'
@@ -55,7 +55,7 @@ player.addEventListener('play', () => {
 
     //結果の出力
     //console.log(detections);
-    //text.textContent = JSON.stringify(detections);
+    text.textContent = JSON.stringify(detections);
     detections_json = JSON.stringify(detections);
   }, 500)
   .catch((e) => {
