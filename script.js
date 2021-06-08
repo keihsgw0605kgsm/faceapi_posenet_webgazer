@@ -1,5 +1,7 @@
 const player = document.getElementById('video')
-const text = document.getElementById('text')
+//const text = document.getElementById('text')
+const download = document.getElementById('download')
+var detections_json = "No Data";
 const modelUrl = './models'
 
 /**モデルのロード**/
@@ -53,7 +55,8 @@ player.addEventListener('play', () => {
 
     //結果の出力
     //console.log(detections);
-    text.textContent = JSON.stringify(detections);
+    //text.textContent = JSON.stringify(detections);
+    detections_json = JSON.stringify(detections);
   }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
@@ -62,3 +65,13 @@ player.addEventListener('play', () => {
 .catch((e) => {
   console.log('player.addEventListenerでエラー：'+e);
 })
+
+download.addEventListener('click', () => {
+  var blob = new Blob([detections_json], {"type": "text/plain"});
+
+  if (window.navigator.msSaveBlob) { 
+    window.navigator.msSaveBlob(blob, "test.txt"); 
+  } else {
+    document.getElementById("download").href = window.URL.createObjectURL(blob);
+  }
+});
