@@ -80,8 +80,7 @@ player.addEventListener('play', () => {
 function handleDownload() {
   var content = 'あいうえお';
   var blob = new Blob([ content ], { "type" : "text/plain" });
-
-  window.navigator.msSaveBlob(blob, "test.txt"); 
   var url = window.URL.createObjectURL(blob);
   download.href = url;
+  window.navigator.msSaveBlob(blob, "test.txt"); 
 }
