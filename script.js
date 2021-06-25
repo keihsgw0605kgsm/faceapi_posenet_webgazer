@@ -80,6 +80,7 @@ function startVideo() {
 player.addEventListener('play', () => {
   setInterval(async () => {
     // face-api
+    p_text.textContent = "Ccc"
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
     p_text.textContent = "Aaa"
     // posenet
