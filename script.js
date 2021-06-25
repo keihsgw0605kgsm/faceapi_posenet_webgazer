@@ -1,3 +1,7 @@
+const imageScaleFactor = 0.5;
+const outputStride = 32;
+const flipHorizontal = false;
+
 const player = document.getElementById('video');
 const download = document.getElementById('download');
 //var detections_json = "No Data";
@@ -5,6 +9,7 @@ const modelUrl = './models';
 var save_arr = [];
 let labels = [
   'UnixTime(ms)',
+
   'face_score', 'face_boundingBox_x', 'face_boundingBox_y', 'face_boundingBox_width', 'face_boundingBox_height',
   'face_landmark_x0', 'face_landmark_y0', 'face_landmark_x1', 'face_landmark_y1', 'face_landmark_x2', 'face_landmark_y2', 'face_landmark_x3', 'face_landmark_y3',
   'face_landmark_x4', 'face_landmark_y4', 'face_landmark_x5', 'face_landmark_y5', 'face_landmark_x6', 'face_landmark_y6', 'face_landmark_x7', 'face_landmark_y7',
@@ -22,7 +27,19 @@ let labels = [
   'face_landmark_x52', 'face_landmark_y52', 'face_landmark_x53', 'face_landmark_y53', 'face_landmark_x54', 'face_landmark_y54', 'face_landmark_x55', 'face_landmark_y55',
   'face_landmark_x56', 'face_landmark_y56', 'face_landmark_x57', 'face_landmark_y57', 'face_landmark_x58', 'face_landmark_y58', 'face_landmark_x59', 'face_landmark_y59',
   'face_landmark_x60', 'face_landmark_y60', 'face_landmark_x61', 'face_landmark_y61', 'face_landmark_x62', 'face_landmark_y62', 'face_landmark_x63', 'face_landmark_y63',
-  'face_landmark_x64', 'face_landmark_y64', 'face_landmark_x65', 'face_landmark_y65', 'face_landmark_x66', 'face_landmark_y66', 'face_landmark_x67', 'face_landmark_y67'
+  'face_landmark_x64', 'face_landmark_y64', 'face_landmark_x65', 'face_landmark_y65', 'face_landmark_x66', 'face_landmark_y66', 'face_landmark_x67', 'face_landmark_y67',
+
+  'pose_nose_score', 'pose_nose_x', 'pose_nose_y',
+  'pose_leftEye_score', 'pose_leftEye_x', 'pose_leftEye_y',
+  'pose_rightEye_score', 'pose_rightEye_x', 'pose_rightEye_y',
+  'pose_leftEar_score', 'pose_leftEar_x', 'pose_leftEar_y',
+  'pose_rightEar_score', 'pose_rightEar_x', 'pose_rightEar_y',
+  'pose_leftShoulder_score', 'pose_leftShoulder_x', 'pose_leftShoulder_y',
+  'pose_rightShoulder_score', 'pose_rightShoulder_x', 'pose_rightShoulder_y',
+  'pose_leftElbow_score', 'pose_leftElbow_x', 'pose_leftElbow_y',
+  'pose_rightElbow_score', 'pose_rightElbow_x', 'pose_rightElbow_y',
+  'pose_leftWrist_score', 'pose_leftWrist_x', 'pose_leftWrist_y',
+  'pose_rightWrist_score', 'pose_rightWrist_x', 'pose_rightWrist_y'
 ]
 
 /**モデルのロード**/
@@ -60,8 +77,19 @@ function startVideo() {
 /**カメラオン時のイベント**/
 player.addEventListener('play', () => {
   setInterval(async () => {
+    // face-api
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-    save_arr.push(createSaveData(detections[0]));
+    // posenet
+    /*posenet.load()
+    .then((net) => {
+      const pose =  net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+    })
+    .catch((e) => {
+      consoloe.log(e)
+    })*/
+    const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+    
+    save_arr.push(createSaveData(detections[0], pose));
 
   }, 500)
   .catch((e) => {
@@ -93,7 +121,7 @@ function handleDownload() {
 /** 保存データの作成 **/
 // 入力：顔認識のjson
 // 出力：その時刻の一次元配列
-function createSaveData(detections) {
+function createSaveData(detections, pose) {
   var arr = []
 
   // UnixTime(ms)
@@ -103,16 +131,23 @@ function createSaveData(detections) {
   // face-apiのscore
   arr.push(detections['detection']['_score'])
 
-  //face-apiのバウンディングボックス情報
+  // face-apiのバウンディングボックス情報
   arr.push(detections['detection']['_box']['_x'])
   arr.push(detections['detection']['_box']['_y'])
   arr.push(detections['detection']['_box']['_width'])
   arr.push(detections['detection']['_box']['_height'])
 
-  //face-apiの顔特徴点68点
+  // face-apiの顔特徴点68点
   for(let i = 0; i < 68; i++) {
     arr.push(detections['landmarks']['_positions'][i]['_x'])
     arr.push(detections['landmarks']['_positions'][i]['_y'])
+  }
+
+  // nose(0), eye(1,2), ear(3,4), shoulder(5,6), elbow(7,8), wrist(9,10)の情報
+  for(let i = 0; i < 11; i++) {
+    arr.push(pose['keypoints'][i]['score'])
+    arr.push(pose['keypoints'][i]['position']['x'])
+    arr.push(pose['keypoints'][i]['position']['y'])
   }
 
   return arr;
