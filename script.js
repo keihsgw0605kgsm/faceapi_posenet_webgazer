@@ -33,6 +33,7 @@ Promise.all([
 .catch((e) => {
   console.log('モデルをロードできません: '+e);
 })
+.then(save_arr.push(labels)) //セーブデータの項目名の追加
 .then(startVideo);
 
 /**カメラを用いたビデオストリーミング**/
