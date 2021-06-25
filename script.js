@@ -1,6 +1,6 @@
-const imageScaleFactor = 0.5;
-const outputStride = 32;
-const flipHorizontal = false;
+//const imageScaleFactor = 0.5;
+//const outputStride = 32;
+//const flipHorizontal = false;
 
 const player = document.getElementById('video');
 const download = document.getElementById('download');
@@ -84,7 +84,7 @@ player.addEventListener('play', () => {
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
     p_text.textContent = "Aaa"
     // posenet
-    posenet.load()
+    /*posenet.load()
     .then((net) => {
       return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
     })
@@ -93,7 +93,7 @@ player.addEventListener('play', () => {
     })
     .catch((e) => {
       consoloe.log(e)
-    })
+    })*/
     //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
     //p_text.textContent = pose['keypoints'][0]['position']['x']
     
