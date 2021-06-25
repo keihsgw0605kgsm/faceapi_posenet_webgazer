@@ -1,16 +1,34 @@
 const player = document.getElementById('video');
-//const text = document.getElementById('text');
 const download = document.getElementById('download');
-var detections_json = "No Data";
+//var detections_json = "No Data";
 const modelUrl = './models';
+var save_arr = [];
+let labels = [
+  'UnixTime(ms)',
+  'face_score', 'face_boundingBox_x', 'face_boundingBox_y', 'face_boundingBox_width', 'face_boundingBox_height',
+  'face_landmark_x0', 'face_landmark_y0', 'face_landmark_x1', 'face_landmark_y1', 'face_landmark_x2', 'face_landmark_y2', 'face_landmark_x3', 'face_landmark_y3',
+  'face_landmark_x4', 'face_landmark_y4', 'face_landmark_x5', 'face_landmark_y5', 'face_landmark_x6', 'face_landmark_y6', 'face_landmark_x7', 'face_landmark_y7',
+  'face_landmark_x8', 'face_landmark_y8', 'face_landmark_x9', 'face_landmark_y9', 'face_landmark_x10', 'face_landmark_y10', 'face_landmark_x11', 'face_landmark_y11',
+  'face_landmark_x12', 'face_landmark_y12', 'face_landmark_x13', 'face_landmark_y13', 'face_landmark_x14', 'face_landmark_y14', 'face_landmark_x15', 'face_landmark_y15',
+  'face_landmark_x16', 'face_landmark_y16', 'face_landmark_x17', 'face_landmark_y17', 'face_landmark_x18', 'face_landmark_y18', 'face_landmark_x19', 'face_landmark_y19',
+  'face_landmark_x20', 'face_landmark_y20', 'face_landmark_x21', 'face_landmark_y21', 'face_landmark_x22', 'face_landmark_y22', 'face_landmark_x23', 'face_landmark_y23',
+  'face_landmark_x24', 'face_landmark_y24', 'face_landmark_x25', 'face_landmark_y25', 'face_landmark_x26', 'face_landmark_y26', 'face_landmark_x27', 'face_landmark_y27',
+  'face_landmark_x28', 'face_landmark_y28', 'face_landmark_x29', 'face_landmark_y29', 'face_landmark_x30', 'face_landmark_y30', 'face_landmark_x31', 'face_landmark_y31',
+  'face_landmark_x32', 'face_landmark_y32', 'face_landmark_x33', 'face_landmark_y33', 'face_landmark_x34', 'face_landmark_y34', 'face_landmark_x35', 'face_landmark_y35',
+  'face_landmark_x36', 'face_landmark_y36', 'face_landmark_x37', 'face_landmark_y37', 'face_landmark_x38', 'face_landmark_y38', 'face_landmark_x39', 'face_landmark_y39',
+  'face_landmark_x40', 'face_landmark_y40', 'face_landmark_x41', 'face_landmark_y41', 'face_landmark_x42', 'face_landmark_y42', 'face_landmark_x43', 'face_landmark_y43',
+  'face_landmark_x44', 'face_landmark_y44', 'face_landmark_x45', 'face_landmark_y45', 'face_landmark_x46', 'face_landmark_y46', 'face_landmark_x47', 'face_landmark_y47',
+  'face_landmark_x48', 'face_landmark_y48', 'face_landmark_x49', 'face_landmark_y49', 'face_landmark_x50', 'face_landmark_y50', 'face_landmark_x51', 'face_landmark_y51',
+  'face_landmark_x52', 'face_landmark_y52', 'face_landmark_x53', 'face_landmark_y53', 'face_landmark_x54', 'face_landmark_y54', 'face_landmark_x55', 'face_landmark_y55',
+  'face_landmark_x56', 'face_landmark_y56', 'face_landmark_x57', 'face_landmark_y57', 'face_landmark_x58', 'face_landmark_y58', 'face_landmark_x59', 'face_landmark_y59',
+  'face_landmark_x60', 'face_landmark_y60', 'face_landmark_x61', 'face_landmark_y61', 'face_landmark_x62', 'face_landmark_y62', 'face_landmark_x63', 'face_landmark_y63',
+  'face_landmark_x64', 'face_landmark_y64', 'face_landmark_x65', 'face_landmark_y65', 'face_landmark_x66', 'face_landmark_y66', 'face_landmark_x67', 'face_landmark_y67'
+]
 
 /**モデルのロード**/
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl),
-  //faceapi.nets.ssdMobilenetv1.loadFromUri(modelUrl),
-  faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
-  //faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl),
-  //faceapi.nets.faceExpressionNet.loadFromUri(modelUrl)
+  faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl)
 ])
 .catch((e) => {
   console.log('モデルをロードできません: '+e);
@@ -26,7 +44,6 @@ function startVideo() {
       height: player.height
     }
   };
-  
   navigator.mediaDevices.getUserMedia(constraints)
   .then(function(stream) {
     player.srcObject = stream;
@@ -41,22 +58,10 @@ function startVideo() {
 
 /**カメラオン時のイベント**/
 player.addEventListener('play', () => {
-  const canvas = faceapi.createCanvasFromMedia(player);
-  document.body.append(canvas);
-  const displaySize = { width: player.width, height: player.height };
-  faceapi.matchDimensions(canvas, displaySize);
-  
   setInterval(async () => {
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-    const resizedDetections = faceapi.resizeResults(detections, displaySize);
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    faceapi.draw.drawDetections(canvas, resizedDetections);
-    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+    save_arr.push(createSaveData(detections[0]));
 
-    //結果の出力
-    //console.log(detections);
-    //text.textContent = JSON.stringify(detections);
-    detections_json = JSON.stringify(detections, null, '\t');
   }, 500)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
@@ -66,10 +71,48 @@ player.addEventListener('play', () => {
   console.log('player.addEventListenerでエラー：'+e);
 });
 
-function handleDownload() {
-  var content = 'あいうえお';
+/** jsonファイルのダウンロード **/
+/*function handleDownload() {
   var blob = new Blob([ detections_json ], { "type" : "text/plain" });
   var url = window.URL.createObjectURL(blob);
   download.href = url;
   window.navigator.msSaveBlob(blob, "test.json"); 
+}*/
+
+/** csvファイルのダウンロード **/
+function handleDownload() { 
+  let data = save_arr.map((arr)=>arr.join(',')).join('\r\n');
+  var bom = new Uint8Array([0xEF, 0xBB, 0xBF])
+  var blob = new Blob([ bom, data ], { "type" : "text/csv" });
+  let url = (window.URL || window.webkitURL).createObjectURL(blob);
+  download.href = url;
+  window.navigator.msSaveBlob(blob, "test.csv");
+}
+
+/** 保存データの作成 **/
+// 入力：顔認識のjson
+// 出力：その時刻の一次元配列
+function createSaveData(detections) {
+  var arr = []
+
+  // UnixTime(ms)
+  var date = new Date();
+  arr.push(date.getTime())
+
+  // face-apiのscore
+  arr.push(detections['detection']['_score'])
+
+  //face-apiのバウンディングボックス情報
+  arr.push(detections['detection']['_box']['_x'])
+  arr.push(detections['detection']['_box']['_y'])
+  arr.push(detections['detection']['_box']['_width'])
+  arr.push(detections['detection']['_box']['_height'])
+
+  //face-apiの顔特徴点68点
+  for(let i = 0; i < 68; i++) {
+    arr.push(detections['landmarks']['_positions'][i]['_x'])
+    arr.push(detections['landmarks']['_positions'][i]['_y'])
+  }
+
+  return arr;
 }
