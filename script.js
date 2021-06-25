@@ -91,7 +91,7 @@ player.addEventListener('play', () => {
     
     save_arr.push(createSaveData(detections[0], pose));
 
-  }, 500)
+  }, 1000)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
   });
