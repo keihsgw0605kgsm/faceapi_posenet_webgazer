@@ -80,6 +80,7 @@ player.addEventListener('play', () => {
   setInterval(async () => {
     // face-api
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+    p_text.textContent = "Aaa"
     // posenet
     posenet.load()
     .then((net) => {
