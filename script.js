@@ -56,6 +56,7 @@ Promise.all([
 
 /**カメラを用いたビデオストリーミング**/
 function startVideo() {
+  p_text.textContent = "Bbb"
   var constraints = {
     audio: true,
     video: {
