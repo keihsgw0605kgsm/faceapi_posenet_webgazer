@@ -95,9 +95,10 @@ player.addEventListener('play', () => {
       consoloe.log(e)
     })*/
     const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
-    p_text.textContent = pose['keypoints'][0]['position']['x']
+    p_text.textContent = "3";
+    //p_text.textContent = pose['keypoints'][0]['position']['x']
     
-    save_arr.push(createSaveData(detections[0], pose));
+    //save_arr.push(createSaveData(detections[0], pose));
     //save_arr.push(createSaveData(detections[0]));
 
   }, 1000)
