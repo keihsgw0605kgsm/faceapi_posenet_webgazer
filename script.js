@@ -84,28 +84,25 @@ player.addEventListener('play', () => {
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
     p_text.textContent = "2";
     // posenet
-    //var pose;
-    var pose = posenet.load()
+    //var pose = {};
+    posenet.load()
     .then((net) => {
       return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
     })
-    /*posenet.load()
-    .then((net) => {
-      return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
-    })
-    .then((pose_) => {
+    .then((pose) => {
       //p_text.textContent = pose_['keypoints'][0]['position']['x']
-      pose = pose_;
+      //pose = pose_;
+      save_arr.push(createSaveData(detections[0], pose));
     })
     .catch((e) => {
       consoloe.log(e)
-    })*/
+    })
 
     //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride);
     //p_text.textContent = "3";
-    p_text.textContent = pose['keypoints'][0]['position']['x']
+    //p_text.textContent = pose['keypoints'][0]['position']['x']
     
-    save_arr.push(createSaveData(detections[0], pose));
+    //save_arr.push(createSaveData(detections[0], pose));
     //save_arr.push(createSaveData(detections[0]));
 
   }, 1000)
