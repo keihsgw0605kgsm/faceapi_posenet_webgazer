@@ -84,8 +84,12 @@ player.addEventListener('play', () => {
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
     p_text.textContent = "2";
     // posenet
-    var pose = {};
-    posenet.load()
+    //var pose;
+    var pose = posenet.load()
+    .then((net) => {
+      return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+    })
+    /*posenet.load()
     .then((net) => {
       return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
     })
@@ -95,7 +99,7 @@ player.addEventListener('play', () => {
     })
     .catch((e) => {
       consoloe.log(e)
-    })
+    })*/
 
     //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride);
     //p_text.textContent = "3";
