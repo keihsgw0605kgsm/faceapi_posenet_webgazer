@@ -98,8 +98,8 @@ player.addEventListener('play', () => {
     p_text.textContent = "3";
     //p_text.textContent = pose['keypoints'][0]['position']['x']
     
-    save_arr.push(createSaveData(detections[0], pose));
-    //save_arr.push(createSaveData(detections[0]));
+    //save_arr.push(createSaveData(detections[0], pose));
+    save_arr.push(createSaveData(detections[0]));
 
   }, 1000)
   .catch((e) => {
@@ -131,7 +131,7 @@ function handleDownload() {
 /** 保存データの作成 **/
 // 入力：顔認識のjson
 // 出力：その時刻の一次元配列
-function createSaveData(detections, pose) {
+function createSaveData(detections) {
   var arr = []
 
   // UnixTime(ms)
@@ -154,11 +154,11 @@ function createSaveData(detections, pose) {
   }
 
   // nose(0), eye(1,2), ear(3,4), shoulder(5,6), elbow(7,8), wrist(9,10)の情報
-  for(let i = 0; i < 11; i++) {
+  /*for(let i = 0; i < 11; i++) {
     arr.push(pose['keypoints'][i]['score'])
     arr.push(pose['keypoints'][i]['position']['x'])
     arr.push(pose['keypoints'][i]['position']['y'])
-  }
+  }*/
 
   return arr;
 }
