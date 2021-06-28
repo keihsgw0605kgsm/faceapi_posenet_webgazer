@@ -1,6 +1,6 @@
-//const imageScaleFactor = 0.5;
-//const outputStride = 32;
-//const flipHorizontal = false;
+const imageScaleFactor = 0.5;
+const outputStride = 32;
+const flipHorizontal = false;
 
 const player = document.getElementById('video');
 const download = document.getElementById('download');
@@ -80,9 +80,9 @@ function startVideo() {
 player.addEventListener('play', () => {
   setInterval(async () => {
     // face-api
-    p_text.textContent = "Ccc"
+    p_text.textContent = "1";
     const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-    p_text.textContent = "Aaa"
+    p_text.textContent = "2";
     // posenet
     /*posenet.load()
     .then((net) => {
@@ -94,11 +94,11 @@ player.addEventListener('play', () => {
     .catch((e) => {
       consoloe.log(e)
     })*/
-    //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
-    //p_text.textContent = pose['keypoints'][0]['position']['x']
+    const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+    p_text.textContent = pose['keypoints'][0]['position']['x']
     
-    //save_arr.push(createSaveData(detections[0], pose));
-    save_arr.push(createSaveData(detections[0]));
+    save_arr.push(createSaveData(detections[0], pose));
+    //save_arr.push(createSaveData(detections[0]));
 
   }, 1000)
   .catch((e) => {
@@ -130,7 +130,7 @@ function handleDownload() {
 /** 保存データの作成 **/
 // 入力：顔認識のjson
 // 出力：その時刻の一次元配列
-function createSaveData(detections) {
+function createSaveData(detections, pose) {
   var arr = []
 
   // UnixTime(ms)
@@ -153,11 +153,11 @@ function createSaveData(detections) {
   }
 
   // nose(0), eye(1,2), ear(3,4), shoulder(5,6), elbow(7,8), wrist(9,10)の情報
-  /*for(let i = 0; i < 11; i++) {
+  for(let i = 0; i < 11; i++) {
     arr.push(pose['keypoints'][i]['score'])
     arr.push(pose['keypoints'][i]['position']['x'])
     arr.push(pose['keypoints'][i]['position']['y'])
-  }*/
+  }
 
   return arr;
 }
