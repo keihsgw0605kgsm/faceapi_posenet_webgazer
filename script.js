@@ -87,7 +87,11 @@ player.addEventListener('play', () => {
     var pose = {};
     posenet.load()
     .then((net) => {
-      pose = net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+      return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+    })
+    .then((pose_) => {
+      p_text.textContent = pose_['keypoints'][0]['position']['x']
+      //pose = pose_;
     })
     .catch((e) => {
       consoloe.log(e)
@@ -95,7 +99,7 @@ player.addEventListener('play', () => {
 
     //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride);
     //p_text.textContent = "3";
-    p_text.textContent = pose['keypoints'][0]['position']['x']
+    //p_text.textContent = pose['keypoints'][0]['position']['x']
     
     save_arr.push(createSaveData(detections[0], pose));
     //save_arr.push(createSaveData(detections[0]));
