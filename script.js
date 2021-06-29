@@ -81,6 +81,9 @@ function startVideo() {
 
 /**カメラオン時のイベント**/
 player.addEventListener('play', () => {
+  webgazer.showVideoPreview(false)
+  .showPredictionPoints(false)
+  .begin();
   setInterval(async () => {
     //変数初期化
     var gaze = {};
