@@ -40,7 +40,10 @@ let labels = [
   'pose_leftElbow_score', 'pose_leftElbow_x', 'pose_leftElbow_y',
   'pose_rightElbow_score', 'pose_rightElbow_x', 'pose_rightElbow_y',
   'pose_leftWrist_score', 'pose_leftWrist_x', 'pose_leftWrist_y',
-  'pose_rightWrist_score', 'pose_rightWrist_x', 'pose_rightWrist_y'
+  'pose_rightWrist_score', 'pose_rightWrist_x', 'pose_rightWrist_y',
+
+  'gaze_x', 'gaze_y',
+  'screen_width', 'screen_height'
 ]
 
 /**モデルのロード**/
@@ -79,32 +82,29 @@ function startVideo() {
 /**カメラオン時のイベント**/
 player.addEventListener('play', () => {
   setInterval(async () => {
+    //変数初期化
+    var gaze = {};
+
     // face-api
     p_text.textContent = "1";
-    const detections = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+    const face = await faceapi.detectAllFaces(player, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
     p_text.textContent = "2";
-    // posenet
-    //var pose = {};
-    posenet.load()
-    .then((net) => {
-      return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
-    })
-    .then((pose) => {
-      //p_text.textContent = pose_['keypoints'][0]['position']['x']
-      //pose = pose_;
-      save_arr.push(createSaveData(detections[0], pose));
-    })
-    .catch((e) => {
-      consoloe.log(e)
-    })
-
-    //const pose = posenet.load().estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride);
-    //p_text.textContent = "3";
-    //p_text.textContent = pose['keypoints'][0]['position']['x']
     
-    //save_arr.push(createSaveData(detections[0], pose));
-    //save_arr.push(createSaveData(detections[0]));
-
+    //webgazer
+    webgazer.getCurrentPrediction().then((predictions_gaze) => {
+      gaze = predictions_gaze;
+      // posenet
+      posenet.load()
+      .then((net) => {
+        return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
+      })
+      .then((pose) => {
+        save_arr.push(createSaveData(face[0], pose, gaze));
+      })
+      .catch((e) => {
+        consoloe.log(e)
+      })
+    })
   }, 1000)
   .catch((e) => {
     console.log('setIntervalでエラー：'+e);
@@ -135,34 +135,42 @@ function handleDownload() {
 /** 保存データの作成 **/
 // 入力：顔認識のjson
 // 出力：その時刻の一次元配列
-function createSaveData(detections, pose) {
-  var arr = []
+function createSaveData(face, pose, gaze) {
+  var arr = [];
 
   // UnixTime(ms)
   var date = new Date();
-  arr.push(date.getTime())
+  arr.push(date.getTime());
 
   // face-apiのscore
-  arr.push(detections['detection']['_score'])
+  arr.push(face['detection']['_score']);
 
   // face-apiのバウンディングボックス情報
-  arr.push(detections['detection']['_box']['_x'])
-  arr.push(detections['detection']['_box']['_y'])
-  arr.push(detections['detection']['_box']['_width'])
-  arr.push(detections['detection']['_box']['_height'])
+  arr.push(face['detection']['_box']['_x']);
+  arr.push(face['detection']['_box']['_y']);
+  arr.push(face['detection']['_box']['_width']);
+  arr.push(face['detection']['_box']['_height']);
 
   // face-apiの顔特徴点68点
   for(let i = 0; i < 68; i++) {
-    arr.push(detections['landmarks']['_positions'][i]['_x'])
-    arr.push(detections['landmarks']['_positions'][i]['_y'])
+    arr.push(face['landmarks']['_positions'][i]['_x']);
+    arr.push(face['landmarks']['_positions'][i]['_y']);
   }
 
   // nose(0), eye(1,2), ear(3,4), shoulder(5,6), elbow(7,8), wrist(9,10)の情報
   for(let i = 0; i < 11; i++) {
-    arr.push(pose['keypoints'][i]['score'])
-    arr.push(pose['keypoints'][i]['position']['x'])
-    arr.push(pose['keypoints'][i]['position']['y'])
+    arr.push(pose['keypoints'][i]['score']);
+    arr.push(pose['keypoints'][i]['position']['x']);
+    arr.push(pose['keypoints'][i]['position']['y']);
   }
+
+  //webgazerの注視座標
+  arr.push(gaze['x']);
+  arr.push(gaze['y']);
+
+  //スクリーンのサイズ
+  arr.push(window.parent.screen.width);
+  arr.push(window.parent.screen.height);
 
   return arr;
 }
