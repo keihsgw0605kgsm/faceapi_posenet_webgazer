@@ -86,7 +86,7 @@ player.addEventListener('play', () => {
   .begin();
   setInterval(async () => {
     //変数初期化
-    var gaze = {};
+    //var gaze = {};
 
     // face-api
     p_text.textContent = "1";
@@ -96,6 +96,7 @@ player.addEventListener('play', () => {
     //webgazer
     webgazer.getCurrentPrediction().then((predictions_gaze) => {
       p_text.textContent = "3";
+      var gaze = {};
       gaze = predictions_gaze;
       // posenet
       posenet.load()
