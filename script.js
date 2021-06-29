@@ -92,14 +92,18 @@ player.addEventListener('play', () => {
     
     //webgazer
     webgazer.getCurrentPrediction().then((predictions_gaze) => {
+      p_text.textContent = "3";
       gaze = predictions_gaze;
       // posenet
       posenet.load()
       .then((net) => {
+        p_text.textContent = "4";
         return net.estimateSinglePose(player, imageScaleFactor, flipHorizontal, outputStride)
       })
       .then((pose) => {
+        p_text.textContent = "5";
         save_arr.push(createSaveData(face[0], pose, gaze));
+        p_text.textContent = "6";
       })
       .catch((e) => {
         consoloe.log(e)
