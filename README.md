@@ -1,2 +1,2 @@
 # measurement_web_system
-計測実験の為のWeb会議システム
+faceapi, posenet, webgazerを導入したシステム（画面共有はしていないのでWeb会議ではない）
